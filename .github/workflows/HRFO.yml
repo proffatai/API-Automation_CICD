@@ -4,25 +4,14 @@ on: push
 
 jobs:
   automated-api-tests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-      - name: Install dependencies
-      - run: npm ci
-      - run: npm run build --if-present
       - name: Install Postman CLI
         run: |
-          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+          powershell.exe -NoProfile -InputFormat None -ExecutionPolicy AllSigned -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://dl-cli.pstmn.io/install/win64.ps1'))"
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
       - name: Run API tests
         run: |
-          postman collection run "32826852-aa29b09c-a223-4437-b7da-280e73f25036"
+          postman collection run "32826852-aa29b09c-a223-4437-b7da-280e73f25036" -e "32826852-42bcbf93-5ccd-4e9f-a81d-f7cd35895226"
